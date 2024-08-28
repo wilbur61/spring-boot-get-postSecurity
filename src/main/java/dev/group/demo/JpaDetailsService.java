@@ -9,27 +9,24 @@ import org.springframework.web.context.WebApplicationContext;
 
 
 @Service
-public class LoginDetailsService implements UserDetailsService {
+public class JpaDetailsService implements UserDetailsService {
 
-    private WebApplicationContext applicationContext;
     private UserService userService;
-     LoginDetailsService(UserService userService, WebApplicationContext applicationContext) {
-        this.userService = userService;
-        this.applicationContext = applicationContext;
-    }
 
-    @PostConstruct
-    public void completeSetup() {
-        userService = applicationContext.getBean(UserService.class);
+    JpaDetailsService(UserService userService) {
+        this.userService = userService;
+
     }
 
 
     @Override
     public UserDetails loadUserByUsername(String username) {
+        //find our user by username
         User user = userService.findByUsername(username);
+        //if the user is not found throw error if not create a new user from
         if (user == null) {
             throw new UsernameNotFoundException(username);
         }
-        return new AppUserPrincipal(user);
+        return new SecurityUser(user);
     }
 }
