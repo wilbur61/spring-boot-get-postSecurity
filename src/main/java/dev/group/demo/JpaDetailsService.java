@@ -1,11 +1,9 @@
 package dev.group.demo;
 
-import jakarta.annotation.PostConstruct;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.WebApplicationContext;
 
 
 @Service
@@ -15,18 +13,24 @@ public class JpaDetailsService implements UserDetailsService {
 
     JpaDetailsService(UserService userService) {
         this.userService = userService;
-
     }
-
 
     @Override
-    public UserDetails loadUserByUsername(String username) {
-        //find our user by username
-        User user = userService.findByUsername(username);
-        //if the user is not found throw error if not create a new user from
-        if (user == null) {
-            throw new UsernameNotFoundException(username);
-        }
-        return new SecurityUser(user);
+    public UserDetails loadUserByUsername(String userName) {
+
+        return userService
+                .findByUsername(userName)
+                .map(SecurityUser::new)
+                .orElseThrow(() -> new UsernameNotFoundException(userName));
     }
+
 }
+
+//what do we return -> userDetails (the last thing is calling the new method)
+//lambda -> .method(SecurityUser::new)
+//how do we start this functional chain off? userService -> the results it yeilds
+//    User user = userService.findByUsername(username);
+//        if (user == null) {
+//        throw new UsernameNotFoundException(username);
+//    }
+//        return new SecurityUser(user);

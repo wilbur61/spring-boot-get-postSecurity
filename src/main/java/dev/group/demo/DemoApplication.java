@@ -15,8 +15,7 @@ public class DemoApplication {
 	@Bean
 	CommandLineRunner commandLineRunner(UserService userService, BCryptPasswordEncoder encoder){
 		return args -> {
-			// userservice.getuser('trevor').getName().getLength()
-			//trevor::getLength()
+
 			userService.save(new User("user", encoder.encode("password")));
 		};
 	}

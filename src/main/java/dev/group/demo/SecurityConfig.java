@@ -27,6 +27,7 @@ public class SecurityConfig  {
                 .userDetailsService(testJpaDetailsService)
                 .formLogin(withDefaults()
                 ).build();
+
     }
 
     @Bean
